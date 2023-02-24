@@ -14,11 +14,11 @@ import telegrambot.Bot;
 
 public class Administrator extends Thread {
 	
-	private final String ADMIN = "Archideutsch_1";
+	private final String ADMIN = ;
 	
 	private String currentState = "";
 	
-	private final static long CHATID  = 1070270011l;
+	private final static long CHATID ;
 	
 	private final static String TEMPLATE[] = {"Списки", "Отметить" , "Сотрудников", "Детей", "Групп", "Добавить", "ЗП", "Назад", "Сотрудника", "Ребенка", "Группу"}; 
 	
@@ -149,7 +149,7 @@ public class Administrator extends Thread {
 				removeKeyBoard(message);
 				init();
 			}
-		}else if(currentState.startsWith("/Добавить/Сотрудника") || currentState.startsWith("/Добавить/Группу") || currentState.startsWith("/Добавить/Ребенка")){
+		}else if(currentState.endsWith("/Добавить/Сотрудника") || currentState.endsWith("/Добавить/Группу") || currentState.endsWith("/Добавить/Ребенка")){
 			if(currentState.contains("Сотрудника")) {
 				addEmployee(message);
 			}else if(currentState.contains("Группу")) {
@@ -161,16 +161,20 @@ public class Administrator extends Thread {
 		
 	}
 	
-	private void addEmployee(Message message) {
+	private void addEmployee(Message message) {//Дописать 
+		removeKeyBoard(message);
+		init();
 		
 	}
 	
 	private void addChild(Message message) {
-		
+		removeKeyBoard(message);
+		init();
 	}
 	
 	private void addGroup(Message message) {
-		
+		removeKeyBoard(message);
+		init();
 	}
 	
 	private void listOfEmployees(Message message) {

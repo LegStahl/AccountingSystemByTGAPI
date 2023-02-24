@@ -21,7 +21,7 @@ public class Bot extends TelegramLongPollingBot {
 	
 	private static  Administrator ADMINISTRATOR = null;
 	
-	private static final String CEO = "bionic_point";
+	private static final String CEO= null;
 	
 	private static QuerryMessageSender querySend;
 	
@@ -66,7 +66,7 @@ public class Bot extends TelegramLongPollingBot {
 	
 	@Override
 	public String getBotToken() {
-		return "5802961575:AAGeLK-FPDfUHdJx5qnsuBDvnsfYXJ3KF_M";
+		return ;
 	}
 
 	public void handleMessage(Message message)  {
