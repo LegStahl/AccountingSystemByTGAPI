@@ -6,6 +6,7 @@ import service.QuerryMessageSender;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -31,13 +32,25 @@ public class Bot extends TelegramLongPollingBot {
 	public void onUpdateReceived(Update update) {
 		
 		if(update.hasMessage()) {
+			
 			handleMessage(update.getMessage());
 			Message message = update.getMessage();
 			System.out.println(message.getFrom().getUserName());
 			if(message.getFrom().getUserName().equals(ADMINISTRATOR.getNameAdmin())) {
 				ADMINISTRATOR.addMessage(message);
 			}
+			else {
+				SendMessage sendMessage = new SendMessage();
+				sendMessage.setChatId(message.getChatId());
+				sendMessage.setText("УХААДИИИИ!!!!");
+				QuerryMessageSender.addMessage(sendMessage);
+			}
 			
+		}else if(update.hasCallbackQuery()) {
+			CallbackQuery message = update.getCallbackQuery();
+			if(message.getFrom().getUserName().equals(ADMINISTRATOR.getNameAdmin())) {
+				ADMINISTRATOR.addMessage(message);
+			}
 		}
 //		else if(update.hasCallbackQuery()) {
 //			
@@ -61,12 +74,13 @@ public class Bot extends TelegramLongPollingBot {
 	@Override
 	public String getBotUsername() {
 		// TODO Auto-generated method stub
-		return "@TestingBaseBot";
+		return ;
 	}
 	
 	@Override
 	public String getBotToken() {
 		return ;
+		
 	}
 
 	public void handleMessage(Message message)  {
