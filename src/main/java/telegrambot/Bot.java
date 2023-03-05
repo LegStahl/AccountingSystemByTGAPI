@@ -1,6 +1,8 @@
 package telegrambot;
 import database.*;
 import service.Administrator;
+import service.Employee;
+import service.Manager;
 import service.QuerryMessageSender;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -28,30 +30,90 @@ public class Bot extends TelegramLongPollingBot {
 	
 	public static DataBase DATA;
 	
+	private static List<Employee> EMPLOYEES = new ArrayList<Employee>();
+	
+	private static List<Manager> MANAGERS = new ArrayList<Manager>();
+	
+	public static synchronized void addEmployee(Employee employee) {
+		EMPLOYEES.add(employee);
+	}
+	
+	private synchronized boolean checkManager(String username) {
+		if(MANAGERS.isEmpty()) {
+			return false;
+		}
+		else {
+			for(Manager manager : MANAGERS) {
+				if(manager.getNameManager().equals(username)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
 	@Override
 	public void onUpdateReceived(Update update) {
-		
+		System.out.println(EMPLOYEES.size() + " " + MANAGERS.size());
 		if(update.hasMessage()) {
 			
 			handleMessage(update.getMessage());
 			Message message = update.getMessage();
 			System.out.println(message.getFrom().getUserName());
 			if(message.getFrom().getUserName().equals(ADMINISTRATOR.getNameAdmin())) {
+				System.out.println("64");
 				ADMINISTRATOR.addMessage(message);
 			}
-			else {
-				SendMessage sendMessage = new SendMessage();
-				sendMessage.setChatId(message.getChatId());
-				sendMessage.setText("УХААДИИИИ!!!!");
-				QuerryMessageSender.addMessage(sendMessage);
+			else if(DATA.checkUserName(message.getFrom().getUserName())) {
+				if(EMPLOYEES.isEmpty()) {
+					Employee employee = new Employee(message.getFrom().getUserName(), message.getChatId());
+					employee.start();
+					addEmployee(employee);
+					System.out.println("68");
+				}else {
+					boolean  checkAttendance = false;
+					for(Employee employee : EMPLOYEES) {
+						System.out.println("76");
+						if(employee.getNameEmployee().equals(message.getFrom().getUserName())) {
+							employee.addMessage(message);
+							System.out.println("79");
+							checkAttendance = true;
+							break;
+						}
+					}
+					if(!checkAttendance) {
+						Employee employee = new Employee(message.getFrom().getUserName(), message.getChatId());
+						employee.start();
+						EMPLOYEES.add(employee);
+					}
+				}
+				
 			}
-			
+			else if(checkManager(message.getFrom().getUserName())) {
+				
+				for(Manager manager : MANAGERS) {
+					System.out.println("72");
+					if(manager.getNameManager().equals(message.getFrom().getUserName())) {
+						manager.addMessage(update.getMessage());
+					}
+				}
+			}
+			else {
+				Manager manager = new Manager(update.getMessage().getFrom().getUserName(), update.getMessage().getChatId());
+				//manager.addMessage(message);
+				System.out.println("80");
+				MANAGERS.add(manager);
+				manager.start();
+				
+			}
 		}else if(update.hasCallbackQuery()) {
 			CallbackQuery message = update.getCallbackQuery();
 			if(message.getFrom().getUserName().equals(ADMINISTRATOR.getNameAdmin())) {
 				ADMINISTRATOR.addMessage(message);
 			}
 		}
+		System.out.println("92");
+		checkManagerIsWorking();
 //		else if(update.hasCallbackQuery()) {
 //			
 ////			handleMessage(update.getCallbackQuery().getMessage());
@@ -70,16 +132,24 @@ public class Bot extends TelegramLongPollingBot {
 //		}
 		
 	}
+	
+	private synchronized void checkManagerIsWorking() {
+		for(Manager manager: MANAGERS) {
+			if(!manager.getIsWorking()) {
+				MANAGERS.remove(manager);
+			}
+		}
+	}
 
 	@Override
 	public String getBotUsername() {
 		// TODO Auto-generated method stub
-		return ;
+		return "";
 	}
 	
 	@Override
 	public String getBotToken() {
-		return ;
+		return "";
 		
 	}
 

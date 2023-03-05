@@ -16,7 +16,7 @@ import telegrambot.Bot;
 
 public class Administrator extends Thread {
 	
-	private final String ADMIN = ;
+	private final String ADMIN = "";
 	
 	private String currentState = "";
 	
@@ -27,11 +27,11 @@ public class Administrator extends Thread {
 	private static Queue<Object> receivedQueue = new ConcurrentLinkedQueue<>();
 	
 	public Administrator() {
-		init();
+		//init();
 	}
 	
 	public String getNameAdmin() {
-		return ADMIN;
+		return "";
 	}
 	
 	public void run() {
